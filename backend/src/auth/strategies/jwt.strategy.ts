@@ -16,12 +16,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Cette méthode est appelée automatiquement si le token est valide
   validate(payload: any) {
-    console.log("JWT PAYLOAD :", payload);
+    console.log('JWT PAYLOAD :', payload);
 
     return {
-        id: payload.sub,
-        email: payload.email,
-        role: payload.role,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      id: payload.sub,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      email: payload.email,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      role: payload.role,
     };
-}
+  }
 }
