@@ -1,6 +1,7 @@
 // Structure des données envoyées lors de l'inscription
 
 export interface RegisterUser {
+  telephone: string | number | readonly string[];
   nom: string;
   prenom: string;
   email: string;
@@ -17,6 +18,7 @@ export interface UserResponse {
   email: string;
   role: 'ADMIN' | 'VENDEUR' | 'ACHETEUR';
   statut: 'ACTIF' | 'INACTIF';
+  telephone: string;
   createdAt: string;
   updatedAt: string;
 }
