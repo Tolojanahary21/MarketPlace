@@ -71,8 +71,10 @@ function Login() {
     {/* navbar et titre  */}
     <nav className="w-full px-6 py-4 flex items-center justify-between relative z-10 bg-gray-100 backdrop-blur-md border-b border-gray-200">
           <div className="text-4xl font-bold ml-20 cursor-pointer">
+            <Link to="/">
             <span className="text-[#1e293b]">Market</span><span className="text-[#42b883]">Place</span>
-          </div>
+            </Link>
+            </div>
 
           {/* <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
             <a href="#" className="hover:text-[#42b883] transition-colors">Accueil</a>
@@ -206,7 +208,7 @@ function Login() {
             
             <div className="text-sm text-white">
               Pas encore de compte ?{" "}
-              <Link to="/register" className="text-[#28a0d3] hover:text-[#5fd3a0] transition font-medium inline-flex items-center gap-1 underline underline-offset-2">
+              <Link to="/register" className="text-[#4295b8] hover:text-[#5fd3a0] transition font-medium inline-flex items-center gap-1 underline underline-offset-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>

@@ -11,7 +11,7 @@ import {
   Store,
   Sparkles,
 } from "lucide-react";
-
+import { Link } from "react-router-dom";
 // ----------------------------- Types ----------------------------------------
 
 type Category = "Tous" | "Artisanat" | "Mode" | "Maison" | "Beauté" | "Technologie";
@@ -156,22 +156,18 @@ const MarketplaceCatalog: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#F7F8F5] text-[#1e293b]">
+
       {/* ---------------------------- Navbar ---------------------------- */}
       <nav className="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between bg-white/80 backdrop-blur-md border-b border-[#1e293b]/10">
-        <div className="flex items-center gap-10">
-          <span className="text-2xl font-extrabold tracking-tight cursor-pointer">
+      {/* Titre */}
+        <div className="flex items-center ml-20 gap-10">
+          <span className="text-4xl font-extrabold tracking-tight cursor-pointer">
             <span className="text-[#1e293b]">Market</span>
             <span className="text-[#42b883]">Place</span>
           </span>
-
-          <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#1e293b]/60">
-            <a href="#" className="hover:text-[#42b883] transition-colors">Catalogue</a>
-            <a href="#" className="hover:text-[#42b883] transition-colors">Vendeurs</a>
-            <a href="#" className="hover:text-[#42b883] transition-colors">Nouveautés</a>
-          </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-2 rounded-full border border-[#1e293b]/10 bg-[#F7F8F5] px-4 py-2 text-sm text-[#1e293b]/40 w-64">
             <Search size={15} />
             <input
@@ -191,11 +187,28 @@ const MarketplaceCatalog: React.FC = () => {
             </div>
             <ChevronDown size={14} className="text-[#1e293b]/40" />
           </div>
-        </div>
+        </div> */}
+        <div className="hidden lg:flex items-center gap-6 text-xl font-medium text-[#1E293B]">
+            <a href="#" className="hover:text-[#42b883] transition-colors">Produits</a>
+            <a href="#" className="hover:text-[#42b883] transition-colors">Vendeurs</a>
+            <a href="#" className="hover:text-[#42b883] transition-colors">///</a>
+          </div>
+        <div className="mr-2">
+              <Link to="/login" className="">
+              <button className="px-3 py-2 text-sm font-bold bg-[#42b883]  text-white rounded-lg hover:bg-[#3aa876] transition-colors cursor-pointer">
+                Connexion
+              </button>
+            </Link>
+            <Link to="/register" className="ml-2">
+              <button className="px-3 py-2 text-sm font-bold bg-[#e6efeb]  text-gray-700 rounded-lg hover:bg-[#3aa876] transition-colors cursor-pointer">
+                Inscription
+              </button>
+            </Link>
+          </div>
       </nav>
 
-      {/* ---------------------------- Hero ---------------------------- */}
-      <header className="relative overflow-hidden px-6 py-14 md:py-20">
+      {/* ---------------------------- First content ---------------------------- */}
+      <header className="relative overflow-hidden px-6 py-7">
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -203,16 +216,25 @@ const MarketplaceCatalog: React.FC = () => {
             backgroundSize: "22px 22px",
           }}
         />
-        <div className="relative max-w-3xl">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#42b883]/10 text-[#3aa876] text-xs font-semibold px-3 py-1.5 mb-4">
+
+    {/* openWorld */}
+        <div className="relative ">
+          <span className="inline-flex ml-20 items-center gap-1.5 rounded-full bg-[#0f1c31] text-[#b0bcb7] text-xs font-semibold px-3 py-1.5 mb-4">
             <Sparkles size={13} /> Ouvert à tous — aucune inscription requise pour parcourir
           </span>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-            Tout le meilleur de nos vendeurs, <span className="text-[#42b883]">réuni au même endroit</span>
-          </h1>
-          <p className="text-[#1e293b]/55 text-base md:text-lg max-w-xl">
-            Parcourez librement le catalogue complet, comparez les prix et découvrez des vendeurs locaux — sans compte, sans friction.
-          </p>
+      {/* Grand title */}
+
+          <div className="mx-auto text-center max-w-4xl mt-10">
+            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+              Tout le meilleur de nos vendeurs, <br />
+              <span className="text-[#42b883]">réuni au même endroit</span>
+            </h1>
+          {/* le little paragraphe */}
+            <p className="text-gray-600 text-xl mx-auto">
+              Parcourez librement le catalogue complet, comparez les prix et découvrez des vendeurs locaux — sans compte, sans friction et en toute securite 
+            </p>
+          </div>
+  
         </div>
       </header>
 

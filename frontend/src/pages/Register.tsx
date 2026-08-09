@@ -81,7 +81,9 @@ function Register() {
         {/* navbar et titre */}
         <nav className="w-full px-6 py-4 flex items-center justify-between relative z-10 bg-gray-100 backdrop-blur-md border-b border-gray-200">
           <div className="text-4xl font-bold ml-20 cursor-pointer">
+            <Link to="/">
             <span className="text-[#1e293b]">Market</span><span className="text-[#42b883]">Place</span>
+            </Link>
           </div>
 
           <div className="mr-20">
