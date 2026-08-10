@@ -20,10 +20,13 @@ model User {
   password  String
   role      Role       @default(ACHETEUR)
   statut    UserStatut @default(ACTIF)
+  emailVerified Boolean @default(false)
+  refreshTokenHash String?
   telephone String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-
+  client    Client?    
+  supplier  Supplier?
   @@map("users")
 }
 
@@ -47,15 +50,15 @@ model Client {
   id          Int          @id @default(autoincrement())
   displayName String
   entreprise  String?
-  telephone   String
   telephone2  String?
   statut      ClientStatut @default(ACTIF)
   type        ClientType
-
+  
   addresses   Address[]
   quotes      Quote[]
   commandes   PurchaseOrder[]
-
+  userId      Int?         @unique  // Un client ne peut être lié qu'à un seul user
+  user        User?        @relation(fields: [userId], references: [id])
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -81,21 +84,19 @@ model Supplier {
   id             Int            @id @default(autoincrement())
   displayName    String
   entreprise     String?
-  telephone      String
   telephone2     String?
-  fax            String?
   website        String?
   dateCreation   DateTime?
   paymentTerms   Json?
   bankInfo       Json?
   statut         SupplierStatut @default(ACTIF)
   type           SupplierType
-
   addresses      Address[]
   products       Product[]
   quotes         Quote[]
   commandes      PurchaseOrder[]
-
+  userId         Int?           @unique  // Un fournisseur ne peut être lié qu'à un seul user
+  user           User?          @relation(fields: [userId], references: [id])
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
@@ -209,7 +210,6 @@ model Product {
   description       String?
   specifications    String?
   statut            ProductStatut  @default(ACTIF)
-
   supplierId        Int
   categoryId        Int
 
@@ -402,3 +402,33 @@ enum FulfillmentStatus {
   EXPEDIE
   LIVRE
 } 
+
+// ======================================================
+// OTP
+// ======================================================
+model OtpCode {
+  id Int @id @default(autoincrement())
+
+  email String
+
+  codeHash String
+
+  type OtpType
+
+  expiresAt DateTime
+
+  attempts Int @default(0)
+
+  verified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([email, type])
+  @@map("otp_codes")
+}
+
+enum OtpType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}

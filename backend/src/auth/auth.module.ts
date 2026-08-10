@@ -10,10 +10,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
 import { SignOptions } from 'jsonwebtoken';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { OtpService } from './otp.service';
+import { MailService } from './mail.service';
 @Module({
   imports: [
     UsersModule,
-
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,8 +28,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   controllers: [AuthController],
 
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard,OtpService,MailService],
 
-  exports: [AuthService],
+  exports: [AuthService,OtpService,MailService],
 })
 export class AuthModule {}
