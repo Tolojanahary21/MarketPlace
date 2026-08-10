@@ -8,6 +8,8 @@ import Admin from "./pages/Admin";
 import Vendeur from "./pages/Vendeur";
 import Acheteur from "./pages/Acheteur";
 
+import VerifyOtp from "./pages/VerifyOtp";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
@@ -20,6 +22,7 @@ function App() {
         {/* Pages publiques */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/" element={<Dashboard />} />
         {/* Pages protégées */}
         <Route

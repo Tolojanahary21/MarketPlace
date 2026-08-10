@@ -1,4 +1,10 @@
 -- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'VENDEUR', 'ACHETEUR');
+
+-- CreateEnum
+CREATE TYPE "UserStatut" AS ENUM ('ACTIF', 'INACTIF');
+
+-- CreateEnum
 CREATE TYPE "ClientStatut" AS ENUM ('ACTIF', 'INACTIF');
 
 -- CreateEnum
@@ -34,18 +40,36 @@ CREATE TYPE "POItemStatut" AS ENUM ('EN_ATTENTE', 'CONFIRME', 'ANNULE');
 -- CreateEnum
 CREATE TYPE "FulfillmentStatus" AS ENUM ('EN_ATTENTE', 'EN_PREPARATION', 'EXPEDIE', 'LIVRE');
 
--- AlterTable
-ALTER TABLE "users" ADD COLUMN     "telephone" TEXT;
+-- CreateEnum
+CREATE TYPE "OtpType" AS ENUM ('EMAIL_VERIFICATION', 'PASSWORD_RESET');
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "nom" TEXT NOT NULL,
+    "prenom" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'ACHETEUR',
+    "statut" "UserStatut" NOT NULL DEFAULT 'ACTIF',
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "refreshTokenHash" TEXT,
+    "telephone" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "clients" (
     "id" SERIAL NOT NULL,
     "displayName" TEXT NOT NULL,
     "entreprise" TEXT,
-    "telephone" TEXT NOT NULL,
     "telephone2" TEXT,
     "statut" "ClientStatut" NOT NULL DEFAULT 'ACTIF',
     "type" "ClientType" NOT NULL,
+    "userId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -57,15 +81,14 @@ CREATE TABLE "suppliers" (
     "id" SERIAL NOT NULL,
     "displayName" TEXT NOT NULL,
     "entreprise" TEXT,
-    "telephone" TEXT NOT NULL,
     "telephone2" TEXT,
-    "fax" TEXT,
     "website" TEXT,
     "dateCreation" TIMESTAMP(3),
     "paymentTerms" JSONB,
     "bankInfo" JSONB,
     "statut" "SupplierStatut" NOT NULL DEFAULT 'ACTIF',
     "type" "SupplierType" NOT NULL,
+    "userId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -219,11 +242,46 @@ CREATE TABLE "po_items" (
     CONSTRAINT "po_items_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "otp_codes" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "codeHash" TEXT NOT NULL,
+    "type" "OtpType" NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "verified" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "otp_codes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "clients_userId_key" ON "clients"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "suppliers_userId_key" ON "suppliers"("userId");
+
 -- CreateIndex
 CREATE UNIQUE INDEX "purchase_orders_poNumber_key" ON "purchase_orders"("poNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "purchase_orders_quoteId_key" ON "purchase_orders"("quoteId");
+
+-- CreateIndex
+CREATE INDEX "otp_codes_email_idx" ON "otp_codes"("email");
+
+-- CreateIndex
+CREATE INDEX "otp_codes_email_type_idx" ON "otp_codes"("email", "type");
+
+-- AddForeignKey
+ALTER TABLE "clients" ADD CONSTRAINT "clients_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "clients"("id") ON DELETE CASCADE ON UPDATE CASCADE;

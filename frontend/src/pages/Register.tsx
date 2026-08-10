@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { register } from "../services/auth.service";
 import type { RegisterUser } from "../interfaces/user.interface";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   // État du formulaire
@@ -13,7 +13,8 @@ function Register() {
     password: "",
     role: "ACHETEUR",
   });
-
+//navigation
+const navigate = useNavigate();
   // Messages
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -39,25 +40,27 @@ function Register() {
     setLoading(true);
 
     try {
-      await register(formData);
-      setSuccess("Inscription réussie !");
+  await register({
+    nom: formData.nom,
+    prenom: formData.prenom,
+    email: formData.email,
+    telephone: formData.telephone,
+    password: formData.password,
+    role: formData.role
+  });
 
-      // Réinitialisation du formulaire
-      setFormData({
-        nom: "",
-        prenom: "",
-        email: "",
-        telephone: "",
-        password: "",
-        role: "ACHETEUR",
-      });
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Une erreur est survenue."
-      );
-    } finally {
-      setLoading(false);
-    }
+  navigate("/verify-otp", {
+    state: {
+      email: formData.email,
+    },
+  });
+} catch (err: any) {
+  setError(
+    err.response?.data?.message || "Une erreur est survenue."
+  );
+} finally {
+  setLoading(false);
+}
   };
 
   return (

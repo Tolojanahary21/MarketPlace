@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 
 import {
   ApiBearerAuth,
@@ -270,9 +263,11 @@ verifyEmail(
   status: 200,
   description: 'Code OTP renvoyé avec succès.',
 })
+// eslint-disable-next-line prettier/prettier
 resendOtp(
   @Body() dto: ResendOtpDto,
 ) {
+  // eslint-disable-next-line prettier/prettier
   return this.authService.resendVerificationOtp(
     dto.email,
   );

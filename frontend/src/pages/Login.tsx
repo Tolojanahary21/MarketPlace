@@ -2,9 +2,11 @@ import { useState } from "react";
 import { login } from "../services/auth.service";
 import type { LoginUser } from "../interfaces/login.interface";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState<LoginUser>({
     email: "",
     password: "",
@@ -29,7 +31,7 @@ function Login() {
 
     try {
       const response = await login(formData);
-      saveLogin(response.accessToken, response.user);
+      saveLogin(response.access_token, response.user);
 
       switch (response.user.role) {
         case "ADMIN":
@@ -43,8 +45,27 @@ function Login() {
           break;
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Email ou mot de passe incorrect");
-    } finally {
+  const message = err.response?.data?.message;
+
+  if (
+    err.response?.status === 401 &&
+    typeof message === "string" &&
+    message.toLowerCase().includes("email") &&
+    message.toLowerCase().includes("vérifiée")
+  ) {
+    navigate("/verify-otp", {
+      state: {
+        email: formData.email,
+      },
+    });
+
+    return;
+  }
+
+  setError(
+    message || "Email ou mot de passe incorrect"
+  );
+} finally {
       setLoading(false);
     }
   };

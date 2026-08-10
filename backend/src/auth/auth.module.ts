@@ -28,8 +28,15 @@ import { MailService } from './mail.service';
   ],
   controllers: [AuthController],
 
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard,OtpService,MailService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+    OtpService,
+    MailService,
+  ],
 
-  exports: [AuthService,OtpService,MailService],
+  exports: [AuthService, OtpService, MailService],
 })
 export class AuthModule {}
