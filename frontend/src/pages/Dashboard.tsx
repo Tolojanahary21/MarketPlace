@@ -1,15 +1,11 @@
 import React, { useState, useMemo } from "react";
 import {
-  Search,
-  Bell,
-  ChevronDown,
   Heart,
   Star,
   MapPin,
   SlidersHorizontal,
   ShoppingBag,
-  Store,
-  Sparkles,
+  Store, 
 } from "lucide-react";
 import { Link } from "react-router-dom";
 // ----------------------------- Types ----------------------------------------
@@ -158,54 +154,142 @@ const MarketplaceCatalog: React.FC = () => {
     <div className="min-h-screen w-full bg-[#F7F8F5] text-[#1e293b]">
 
       {/* ---------------------------- Navbar ---------------------------- */}
-      <nav className="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between bg-white/80 backdrop-blur-md border-b border-[#1e293b]/10">
-      {/* Titre */}
-        <div className="flex items-center ml-20 gap-10">
-          <span className="text-4xl font-extrabold tracking-tight cursor-pointer">
-            <span className="text-[#1e293b]">Market</span>
-            <span className="text-[#42b883]">Place</span>
-          </span>
-        </div>
+      <nav className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-[#1e293b]/10">
 
-        {/* <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 rounded-full border border-[#1e293b]/10 bg-[#F7F8F5] px-4 py-2 text-sm text-[#1e293b]/40 w-64">
-            <Search size={15} />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Rechercher un produit, un vendeur…"
-              className="bg-transparent outline-none w-full text-[#1e293b] placeholder:text-[#1e293b]/40"
-            />
-          </div>
-          <button className="relative rounded-full p-2 hover:bg-[#1e293b]/5 transition-colors cursor-pointer">
-            <Bell size={18} />
-            <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#42b883]" />
-          </button>
-          <div className="flex items-center gap-2 pl-2 border-l border-[#1e293b]/10 cursor-pointer">
-            <div className="h-8 w-8 rounded-full bg-[#42b883]/15 flex items-center justify-center text-sm font-semibold text-[#3aa876]">
-              A
-            </div>
-            <ChevronDown size={14} className="text-[#1e293b]/40" />
-          </div>
-        </div> */}
-        <div className="hidden lg:flex items-center gap-6 text-xl font-medium text-[#1E293B]">
-            <a href="#" className="hover:text-[#42b883] transition-colors">Produits</a>
-            <a href="#" className="hover:text-[#42b883] transition-colors">Vendeurs</a>
-            <a href="#" className="hover:text-[#42b883] transition-colors">///</a>
-          </div>
-        <div className="mr-2">
-              <Link to="/login" className="">
-              <button className="px-3 py-2 text-sm font-bold bg-[#42b883]  text-white rounded-lg hover:bg-[#3aa876] transition-colors cursor-pointer">
-                Connexion
-              </button>
-            </Link>
-            <Link to="/register" className="ml-2">
-              <button className="px-3 py-2 text-sm font-bold bg-[#e6efeb]  text-gray-700 rounded-lg hover:bg-[#3aa876] transition-colors cursor-pointer">
-                Inscription
-              </button>
-            </Link>
-          </div>
-      </nav>
+  {/* Navbar principale */}
+  <div className="px-6 py-4 flex items-center gap-8">
+
+    {/* Logo */}
+    <div className="flex items-center ml-20 shrink-0">
+      <Link to="/">
+        <span className="text-4xl font-extrabold tracking-tight cursor-pointer">
+          <span className="text-[#1e293b]">Market</span>
+          <span className="text-[#42b883]">Place</span>
+        </span>
+      </Link>
+    </div>
+
+    {/* Catégories */}
+    <div className="hidden lg:flex items-center shrink-0">
+      <button className="flex items-center gap-2 px-4 py-2 text-lg font-semibold text-[#1e293b] hover:text-[#42b883] transition-colors cursor-pointer">
+        ☰
+        <span>Catégories</span>
+      </button>
+    </div>
+
+    {/* Barre de recherche */}
+    <div className="hidden lg:flex flex-1 max-w-2xl">
+      <div className="flex w-full h-11 border-2 border-[#42b883] rounded-lg overflow-hidden">
+
+        <input
+          type="text"
+          placeholder="Rechercher un produit, une marque ou une catégorie..."
+          className="flex-1 px-4 text-sm text-[#1e293b] outline-none"
+        />
+
+        <button className="px-6 bg-[#42b883] text-white font-semibold hover:bg-[#3aa876] transition-colors cursor-pointer">
+          Rechercher
+        </button>
+
+      </div>
+    </div>
+
+    {/* Actions */}
+    <div className="flex items-center gap-5 ml-auto">
+
+      {/* Favoris */}
+      <Link
+        to="/favorites"
+        className="hidden xl:flex flex-col items-center text-[#1e293b] hover:text-[#42b883] transition-colors"
+      >
+        <span className="text-xl">♡</span>
+        <span className="text-xs">Favoris</span>
+      </Link>
+
+      {/* Panier */}
+      <Link
+        to="/cart"
+        className="hidden xl:flex flex-col items-center text-[#1e293b] hover:text-[#42b883] transition-colors"
+      >
+        <span className="text-xl">🛒</span>
+        <span className="text-xs">Panier</span>
+      </Link>
+
+      {/* Connexion */}
+      <Link to="/login">
+        <button className="px-4 py-2 text-sm font-bold bg-[#42b883] text-white rounded-lg hover:bg-[#3aa876] transition-colors cursor-pointer">
+          Connexion
+        </button>
+      </Link>
+
+      {/* Inscription */}
+      <Link to="/register">
+        <button className="px-4 py-2 text-sm font-bold bg-[#e6efeb] text-gray-700 rounded-lg hover:bg-[#42b883] hover:text-white transition-colors cursor-pointer">
+          Inscription
+        </button>
+      </Link>
+
+    </div>
+  </div>
+
+  {/* Navigation secondaire */}
+  <div className="hidden lg:flex items-center px-6 ml-20 border-t border-[#1e293b]/5">
+
+    <div className="flex items-center gap-8 h-12 text-sm font-semibold text-[#1e293b]">
+
+      <Link
+        to="/products"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Produits
+      </Link>
+
+      <Link
+        to="/vendors"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Vendeurs
+      </Link>
+
+      <Link
+        to="/promotions"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Promotions
+      </Link>
+
+      <Link
+        to="/new"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Nouveautés
+      </Link>
+
+      <Link
+        to="/best-sellers"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Meilleures ventes
+      </Link>
+
+      <Link
+        to="/stores"
+        className="hover:text-[#42b883] transition-colors"
+      >
+        Boutiques
+      </Link>
+
+      <Link
+        to="/become-vendor"
+        className="ml-4 text-[#42b883] hover:text-[#3aa876] transition-colors"
+      >
+        Devenir vendeur
+      </Link>
+
+    </div>
+  </div>
+
+</nav>
 
       {/* ---------------------------- First content ---------------------------- */}
       <header className="relative overflow-hidden px-6 py-7">
@@ -219,8 +303,8 @@ const MarketplaceCatalog: React.FC = () => {
 
     {/* openWorld */}
         <div className="relative ">
-          <span className="inline-flex ml-20 items-center gap-1.5 rounded-full bg-[#0f1c31] text-[#b0bcb7] text-xs font-semibold px-3 py-1.5 mb-4">
-            <Sparkles size={13} /> Ouvert à tous — aucune inscription requise pour parcourir
+          <span className="inline-flex ml-20 items-center gap-1.5 rounded-full bg-[#bdc1c7] text-[#12151b] text-xs font-semibold px-3 py-1.5 mb-4">
+             Ouvert à tous — aucune inscription requise pour parcourir
           </span>
       {/* Grand title */}
 
