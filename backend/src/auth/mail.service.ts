@@ -2,38 +2,65 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
 
 import { OtpType } from '@prisma/client';
+import { Transporter } from 'nodemailer';
 
-@Injectable()
-export class MailService {
-  private readonly resend: Resend;
-  private readonly logger = new Logger(
-    MailService.name,
-  );
-
+@Injectable()  
+export class MailService  {
+  private readonly logger = new Logger(MailService.name);
+  private readonly transporter: Transporter;
   private readonly from: string;
 
   constructor(
     private readonly configService: ConfigService,
   ) {
-    const apiKey =
-      this.configService.get<string>(
-        'RESEND_API_KEY',
-      );
+    const host = this.configService.get<string>(
+      'MAIL_HOST',
+    );
 
-    const from =
-      this.configService.get<string>(
-        'MAIL_FROM',
-      );
+    const port = this.configService.get<number>(
+      'MAIL_PORT',
+    );
 
-    if (!apiKey) {
+    const user = this.configService.get<string>(
+      'MAIL_USER',
+    );
+
+    const password = this.configService.get<string>(
+      'MAIL_PASSWORD',
+    );
+
+    const from = this.configService.get<string>(
+      'MAIL_FROM',
+    );
+
+    if (!host) {
       throw new Error(
-        'RESEND_API_KEY n\'est pas configurée.',
+        'MAIL_HOST n\'est pas configurée.',
+      );
+    }
+
+    if (!port) {
+      throw new Error(
+        'MAIL_PORT n\'est pas configurée.',
+      );
+    }
+
+    if (!user) {
+      throw new Error(
+        'MAIL_USER n\'est pas configurée.',
+      );
+    }
+
+    if (!password) {
+      throw new Error(
+        'MAIL_PASSWORD n\'est pas configurée.',
       );
     }
 
@@ -43,22 +70,51 @@ export class MailService {
       );
     }
 
-    this.resend = new Resend(apiKey);
+    this.transporter = nodemailer.createTransport({
+      host:'smtp.gmail.com',
+      port:465,
+      secure: true,
+
+      auth: {
+        user,
+        pass: password,
+      },
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
+    });
+
     this.from = from;
+    
+  }
+
+  // =========================================================
+  // TESTER LA CONNEXION SMTP
+  // =========================================================
+
+  async verifyConnection(): Promise<void> {
+    try {
+      await this.transporter.verify();
+
+      this.logger.log(
+        'Connexion SMTP établie avec succès.',
+      );
+    } catch (error) {
+      this.logger.error(
+        'Impossible de se connecter au serveur SMTP.',
+        error,
+      );
+
+      throw new InternalServerErrorException(
+        'Impossible de se connecter au serveur email.',
+      );
+    }
   }
 
   // =========================================================
   // ENVOYER UN OTP
   // =========================================================
 
-  /**
-   * Envoie un code OTP par email.
-   *
-   * Utilisé pour :
-   *
-   * - vérification du compte
-   * - réinitialisation du mot de passe
-   */
   async sendOtpEmail(
     email: string,
     otp: string,
@@ -86,46 +142,29 @@ export class MailService {
         : 'Utilisez le code ci-dessous pour réinitialiser votre mot de passe.';
 
     try {
-      const { data, error } =
-        await this.resend.emails.send({
-          from: this.from,
-          to: normalizedEmail,
-          subject,
+      const info = await this.transporter.sendMail({
+        from: this.from,
 
-          html: this.buildOtpTemplate(
-            title,
-            description,
-            otp,
-            isEmailVerification,
-          ),
-        });
+        to: normalizedEmail,
 
-      if (error) {
-        this.logger.error(
-          'Erreur Resend',
-          error,
-        );
+        subject,
 
-        throw new InternalServerErrorException(
-          'Impossible d’envoyer l’email.',
-        );
-      }
+        html: this.buildOtpTemplate(
+          title,
+          description,
+          otp,
+          isEmailVerification,
+        ),
+      });
 
       this.logger.log(
-        `Email OTP envoyé à ${normalizedEmail}. ID: ${data?.id}`,
+        `Email OTP envoyé à ${normalizedEmail}. ID: ${info.messageId}`,
       );
     } catch (error) {
       this.logger.error(
-        'Erreur lors de l’envoi de l’email.',
+        `Erreur lors de l'envoi de l'email à ${normalizedEmail}`,
         error,
       );
-
-      if (
-        error instanceof
-        InternalServerErrorException
-      ) {
-        throw error;
-      }
 
       throw new InternalServerErrorException(
         'Impossible d’envoyer l’email.',
@@ -137,9 +176,6 @@ export class MailService {
   // TEMPLATE OTP
   // =========================================================
 
-  /**
-   * Génère le HTML de l'email OTP.
-   */
   private buildOtpTemplate(
     title: string,
     description: string,
@@ -154,6 +190,7 @@ export class MailService {
     return `
       <!DOCTYPE html>
       <html lang="fr">
+
         <head>
           <meta charset="UTF-8" />
 
@@ -173,6 +210,7 @@ export class MailService {
             font-family: Arial, Helvetica, sans-serif;
           "
         >
+
           <div
             style="
               max-width: 600px;
@@ -222,6 +260,7 @@ export class MailService {
                 text-align: center;
               "
             >
+
               <span
                 style="
                   font-size: 36px;
@@ -232,6 +271,7 @@ export class MailService {
               >
                 ${otp}
               </span>
+
             </div>
 
             <p
@@ -278,7 +318,9 @@ export class MailService {
             </p>
 
           </div>
+
         </body>
+
       </html>
     `;
   }

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { register } from "../services/auth.service";
 import type { RegisterUser } from "../interfaces/user.interface";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
+
   // État du formulaire
   const [formData, setFormData] = useState<RegisterUser>({
     nom: "",
@@ -15,7 +17,6 @@ function Register() {
   });
 
   // Messages
-  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,28 +35,18 @@ function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setSuccess("");
     setError("");
     setLoading(true);
 
     try {
       await register(formData);
-      setSuccess("Inscription réussie !");
 
-      // Réinitialisation du formulaire
-      setFormData({
-        nom: "",
-        prenom: "",
-        email: "",
-        telephone: "",
-        password: "",
-        role: "ACHETEUR",
-      });
+      // Redirection vers la vérification OTP avec l'email en state
+      navigate("/verify-otp", { state: { email: formData.email } });
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Une erreur est survenue."
       );
-    } finally {
       setLoading(false);
     }
   };
@@ -127,16 +118,6 @@ function Register() {
           <div className="w-10 h-1 bg-[#42b883] rounded-full mx-auto mt-3"></div>
           <p className="text-sm text-white/50 mt-3">Créez votre espace</p>
         </div>
-      
-        {/* Message de succès */}
-        {success && (
-          <div className="mb-5 flex items-start gap-2.5 rounded-lg bg-green-500/10 backdrop-blur-sm border border-green-500/20 px-4 py-3 text-sm text-green-200 animate-fadeDown">
-            <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{success}</span>
-          </div>
-        )}
 
         {/* Message d'erreur */}
         {error && (

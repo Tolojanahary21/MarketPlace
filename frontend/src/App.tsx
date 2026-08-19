@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import VerifyOtp from "./pages/VerifyOtp";
 import Dashboard from "./pages/Dashboard";
 
 import Admin from "./pages/Admin";
@@ -20,6 +21,7 @@ function App() {
         {/* Pages publiques */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/" element={<Dashboard />} />
         {/* Pages protégées */}
         <Route
