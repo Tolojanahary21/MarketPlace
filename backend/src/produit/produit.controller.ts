@@ -77,15 +77,7 @@ export class ProductController {
   // =========================================================
 
   @Get()
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
-  @Roles(
-    Role.ADMIN,
-    Role.VENDEUR,
-    Role.ACHETEUR,
-  )
+  // Route publique : accessible sans authentification (catalogue visiteur).
   @ApiOperation({
     summary:
       'Liste des produits',
@@ -99,15 +91,7 @@ export class ProductController {
   // =========================================================
 
   @Get(':id')
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
-  @Roles(
-    Role.ADMIN,
-    Role.VENDEUR,
-    Role.ACHETEUR,
-  )
+  // Route publique : accessible sans authentification (fiche produit visiteur).
   @ApiParam({
     name: 'id',
     example: 1,
